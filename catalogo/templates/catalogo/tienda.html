@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valerianos Pastelería Fina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'catalogo/css/estilos.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+        <a href="{% url 'catalogo:tienda' %}" class="logo">Valerianos.</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'catalogo:tienda' %}">Inicio</a></li>
+            <li><a href="#">Categorías</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+        
+        <div class="nav-icons" style="display: flex; align-items: center; gap: 15px;">
+            
+            {% if user.is_authenticated %}
+                <span style="font-size: 0.95rem; color: #4A2825;">
+                    Hola, <b style="font-weight: 700;">{{ user.username }}</b>
+                </span>
+                <a href="{% url 'usuarios:logout' %}" style="font-size: 0.9rem; color: #888; text-decoration: none; font-weight: 600; border-right: 2px solid #ddd; padding-right: 15px; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#888'"><img src="media/iconos/logout.png" alt="Salir" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
+            {% else %}
+                <a href="{% url 'usuarios:login' %}" style="font-size: 0.9rem; color: #4A2825; text-decoration: none; font-weight: 600; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#4A2825'"><img src="media/iconos/person.png" alt="Entrar" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
+                <a href="{% url 'usuarios:registro' %}" style="font-size: 0.9rem; color: white; background-color: #A35D49; padding: 6px 15px; border-radius: 6px; text-decoration: none; font-weight: 600; border-right: 2px solid #ddd; margin-right: 5px; transition: 0.3s; display: flex;" onmouseover="this.style.backgroundColor='#3E211D'" onmouseout="this.style.backgroundColor='#A35D49'">Regístrate</a>
+            {% endif %}
+
+            <a href="{% url 'catalogo:ver_carrito' %}" style="text-decoration: none; font-size: 1rem; display: flex;">+{{ request.session.carrito|length }}<img src="media/iconos/shopping_bag.png" alt="Carrito" style="width: 30px; height: 30px; display: flex;"></a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-text">
+            <h1>Llevamos felicidad a través de un pastel.</h1>
+            <p>Elaboramos diferentes tipos de pasteles, galletas suaves, tartas de queso y postres artesanales con los ingredientes más finos de la ciudad. Date el gusto que mereces.</p>
+            <div class="btn-group">
+                <a href="#productos" class="btn-primary">Ordenar Ahora</a>
+                <a href="#productos" class="btn-secondary">Ver Menú</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pastel de Chocolate">
+        </div>
+    </header>
+
+    <section id="productos">
+        <h2 class="section-title">Nuestros Más Vendidos</h2>
+        <p class="section-subtitle">Aquí tienes nuestras mejores creaciones que todos adoran. La ligereza y dulzura de nuestros pasteles te harán querer más y más. Empieza a disfrutar de nuestra variedad.</p>
+
+        <div class="productos-grid">
+            {% for producto in productos %}
+            <div class="producto-card">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" class="producto-imagen">
+                {% else %}
+                    <div style="width: 100%; height: 200px; background: #eee; border-radius: 15px; margin-bottom: 15px;"></div>
+                {% endif %}
+                
+                <div class="producto-info">
+                    <h3 class="producto-nombre">{{ producto.nombre_producto }}</h3>
+                    <div class="producto-estrellas">★★★★★ <span style="color: #999; font-size: 0.8rem;">4.9</span></div>
+                    
+                    <p class="producto-precio">S/ {{ producto.precio_unidad }}</p>
+                    <a href="{% url 'catalogo:detalle_producto' producto.id %}" class="btn-card">Ver Detalles</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer class="footer" id="contacto">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Valerianos</h3>
+                <p>Tu pastelería de confianza para momentos especiales.</p>
+                <p>Llevando dulzura a tu hogar desde 2026.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces Rápidos</h3>
+                <p>Términos y Condiciones</p>
+                <p>Política de Privacidad</p>
+                <p>Preguntas Frecuentes</p>
+            </div>
+            <div class="footer-col">
+                <h3>Visítanos</h3>
+                <p>📍 Av. Ejército 1025</p>
+                <p>Arequipa, Perú</p>
+                <p>📞 +51 959 123 456</p>
+                <p>✉️ pedidos@valerianos.pe</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Valerianos Pastelería Fina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="chatbot-container" style="position: fixed; bottom: 20px; right: 20px; width: 320px; border: none; border-radius: 15px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.15); font-family: 'Poppins', sans-serif; z-index: 1000; overflow: hidden;">
+        <div style="background: #4A2825; color: white; padding: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleChat()">
+            <span><img src="media/iconos/chat.png" alt="Chat" style="width: 24px; height: 24px; display: flex;"></span>
+            <span style="font-weight: 600; text-align: left;">Asistente Virtual</span>
+            <span>▼</span>
+        </div>
+        
+        <div id="chat-body" style="display: none; padding: 15px; background: #FFFDF9;">
+            <div id="chat-messages" style="height: 250px; overflow-y: auto; font-size: 14px; margin-bottom: 10px; padding-right: 5px;">
+                <p style="background: #FFF2E5; padding: 10px; border-radius: 10px; color: #4A2825;">
+                    <b>Bot:</b> ¡Hola! Dime qué tipo de postre buscas (ej. "algo económico", "muy dulce" o "con fruta").
+                </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="chat-input" placeholder="Escribe aquí..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Poppins', sans-serif;">
+                <button onclick="enviarMensaje()" style="background: #A35D49; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">➢</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'catalogo/js/scripts.js' %}"></script>
+</body>
+</html>
