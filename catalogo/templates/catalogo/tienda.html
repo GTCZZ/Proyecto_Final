@@ -14,7 +14,7 @@
         <a href="{% url 'catalogo:tienda' %}" class="logo">Valerianos.</a>
         <ul class="nav-links">
             <li><a href="{% url 'catalogo:tienda' %}">Inicio</a></li>
-            <li><a href="#">Categorías</a></li>
+            <li><a href="{% url 'catalogo:categorias' %}">Categorías</a></li>
             <li><a href="#">Nosotros</a></li>
             <li><a href="#contacto">Contacto</a></li>
         </ul>
@@ -41,7 +41,7 @@
             <p>Elaboramos diferentes tipos de pasteles, galletas suaves, tartas de queso y postres artesanales con los ingredientes más finos de la ciudad. Date el gusto que mereces.</p>
             <div class="btn-group">
                 <a href="#productos" class="btn-primary">Ordenar Ahora</a>
-                <a href="#productos" class="btn-secondary">Ver Menú</a>
+                <a href="{% url 'catalogo:categorias' %}" class="btn-secondary">Ver Menú</a>
             </div>
         </div>
         <div class="hero-image">

@@ -7,6 +7,8 @@ from functools import reduce
 from django.http import JsonResponse
 from .chatbot_logico import consultar_chatbot
 import traceback
+from django.http import JsonResponse
+from .chatbot_logico import consultar_chatbot
 # Create your views here.
 
 def tienda(request):
@@ -94,9 +96,6 @@ def ver_carrito(request):
     }
     return render(request, 'catalogo/carrito.html', contexto)
 
-from django.http import JsonResponse
-from .chatbot_logico import consultar_chatbot
-
 # ... (tus otras vistas se quedan igual) ...
 
 def api_chat(request):
@@ -130,3 +129,52 @@ def detalle_producto(request, producto_id):
         'productos_relacionados': productos_relacionados
     }
     return render(request, 'catalogo/detalle_producto.html', contexto)
+
+def eliminar_del_carrito(request, producto_id):
+    if request.method == 'POST':
+        carrito = request.session.get('carrito', {})
+        prod_id = str(producto_id)
+        
+        # Si el producto está en el carrito, lo borramos de la memoria
+        if prod_id in carrito:
+            del carrito[prod_id]
+            request.session['carrito'] = carrito
+            
+    return redirect('catalogo:ver_carrito')
+
+def categorias(request):
+    # 1. Obtenemos TODOS los productos y los convertimos en una lista estándar de Python
+    # para poder aplicar el paradigma funcional en memoria.
+    productos = list(Producto.objects.all())
+    
+    # Capturamos lo que el usuario envía por la URL (ej. ?q=chocolate&dulzura=Alto)
+    query = request.GET.get('q', '').lower()
+    filtro_dulzura = request.GET.get('dulzura', '')
+    filtro_tamano = request.GET.get('tamano', '')
+
+    # === APLICANDO PROGRAMACIÓN FUNCIONAL ===
+    
+    # Filtrar por Nombre
+    if query:
+        productos = list(filter(lambda p: query in p.nombre_producto.lower(), productos))
+        
+    # Filtrar por Nivel de Dulzura
+    if filtro_dulzura:
+        productos = list(filter(lambda p: p.nivel_dulzura == filtro_dulzura, productos))
+        
+    # Filtrar por Tamaño
+    if filtro_tamano:
+        productos = list(filter(lambda p: p.tamano == filtro_tamano, productos))
+
+    # Usamos map() para extraer solo las columnas que nos interesan y set() para borrar duplicados.
+    # Así armamos los selectores del HTML de forma dinámica.
+    todos_los_productos = Producto.objects.all()
+    opciones_dulzura = set(filter(None, map(lambda p: p.nivel_dulzura, todos_los_productos)))
+    opciones_tamano = set(filter(None, map(lambda p: p.tamano, todos_los_productos)))
+
+    contexto = {
+        'productos': productos,
+        'opciones_dulzura': opciones_dulzura,
+        'opciones_tamano': opciones_tamano,
+    }
+    return render(request, 'catalogo/categorias.html', contexto)

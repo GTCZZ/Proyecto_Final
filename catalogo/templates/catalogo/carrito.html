@@ -12,7 +12,7 @@
         <a href="{% url 'catalogo:tienda' %}" class="logo">Valerianos.</a>
         <ul class="nav-links">
             <li><a href="{% url 'catalogo:tienda' %}">Inicio</a></li>
-            <li><a href="#">Categorías</a></li>
+            <li><a href="{% url 'catalogo:categorias' %}">Categorías</a></li>
             <li><a href="#">Nosotros</a></li>
             <li><a href="#contacto">Contacto</a></li>
         </ul>
@@ -57,7 +57,15 @@
                     </td>
                     <td style="color: #666;">S/ {{ item.producto.precio_unidad }}</td>
                     <td style="font-weight: 600;">{{ item.cantidad }}</td>
-                    <td style="color: #A35D49; font-weight: bold;">S/ {{ item.subtotal }}</td>
+                    <td style="color: #A35D49; font-weight: bold; display: flex; align-items: center; justify-content: space-between;">
+                        S/ {{ item.subtotal }}
+                        <form action="{% url 'catalogo:eliminar_carrito' item.producto.id %}" method="POST" onsubmit="return confirm('¿Seguro que deseas quitar este postre del carrito?');">
+                            {% csrf_token %}
+                            <button type="submit" style="background: #FFF2E5; border: 1px solid #f5c6cb; color: #e74c3c; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;" onmouseover="this.style.background='#e74c3c'; this.style.color='white'" onmouseout="this.style.background='#FFF2E5'; this.style.color='#e74c3c'" title="Quitar">
+                                -
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
