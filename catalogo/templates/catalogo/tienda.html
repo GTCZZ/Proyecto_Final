@@ -25,13 +25,13 @@
                 <span style="font-size: 0.95rem; color: #4A2825;">
                     Hola, <b style="font-weight: 700;">{{ user.username }}</b>
                 </span>
-                <a href="{% url 'usuarios:logout' %}" style="font-size: 0.9rem; color: #888; text-decoration: none; font-weight: 600; border-right: 2px solid #ddd; padding-right: 15px; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#888'"><img src="media/iconos/logout.png" alt="Salir" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
+                <a href="{% url 'usuarios:logout' %}" style="font-size: 0.9rem; color: #888; text-decoration: none; font-weight: 600; border-right: 2px solid #ddd; padding-right: 15px; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#888'"><img src="static/media/iconos/logout.png" alt="Salir" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
             {% else %}
-                <a href="{% url 'usuarios:login' %}" style="font-size: 0.9rem; color: #4A2825; text-decoration: none; font-weight: 600; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#4A2825'"><img src="media/iconos/person.png" alt="Entrar" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
+                <a href="{% url 'usuarios:login' %}" style="font-size: 0.9rem; color: #4A2825; text-decoration: none; font-weight: 600; transition: 0.3s;" onmouseover="this.style.color='#A35D49'" onmouseout="this.style.color='#4A2825'"><img src="static/media/iconos/person.png" alt="Entrar" style="width: 30px; height: 30px; margin-left: 5px; display: flex;"></a>
                 <a href="{% url 'usuarios:registro' %}" style="font-size: 0.9rem; color: white; background-color: #A35D49; padding: 6px 15px; border-radius: 6px; text-decoration: none; font-weight: 600; border-right: 2px solid #ddd; margin-right: 5px; transition: 0.3s; display: flex;" onmouseover="this.style.backgroundColor='#3E211D'" onmouseout="this.style.backgroundColor='#A35D49'">Regístrate</a>
             {% endif %}
 
-            <a href="{% url 'catalogo:ver_carrito' %}" style="text-decoration: none; font-size: 1rem; display: flex;">+{{ request.session.carrito|length }}<img src="media/iconos/shopping_bag.png" alt="Carrito" style="width: 30px; height: 30px; display: flex;"></a>
+            <a href="{% url 'catalogo:ver_carrito' %}" style="text-decoration: none; font-size: 1rem; display: flex;">+{{ request.session.carrito|length }}<img src="static/media/iconos/shopping_bag.png" alt="Carrito" style="width: 30px; height: 30px; display: flex;"></a>
         </div>
     </nav>
 
@@ -102,7 +102,7 @@
 
     <div id="chatbot-container" style="position: fixed; bottom: 20px; right: 20px; width: 320px; border: none; border-radius: 15px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.15); font-family: 'Poppins', sans-serif; z-index: 1000; overflow: hidden;">
         <div style="background: #4A2825; color: white; padding: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleChat()">
-            <span><img src="media/iconos/chat.png" alt="Chat" style="width: 24px; height: 24px; display: flex;"></span>
+            <span><img src="static/media/iconos/chat.png" alt="Chat" style="width: 24px; height: 24px; display: flex;"></span>
             <span style="font-weight: 600; text-align: left;">Asistente Virtual</span>
             <span>▼</span>
         </div>
