@@ -8,7 +8,7 @@ def registro_cliente(request):
     if request.method == 'POST':
         form = RegistroClienteForm(request.POST)
         if form.is_valid():
-            # 1. Guardamos los datos base en la tabla Usuario
+            # Guardamos los datos base en la tabla Usuario
             usuario = form.save(commit=False)
             usuario.rol = 'CLIENTE'  
             usuario.save()
@@ -16,7 +16,7 @@ def registro_cliente(request):
             # Extraemos la dirección que el usuario acaba de escribir
             direccion_ingresada = form.cleaned_data.get('direccion')
 
-            # 2. Guardamos en la tabla Cliente usando la dirección real
+            # Guardamos en la tabla Cliente usando la dirección real
             Cliente.objects.create(
                 nombre=usuario.first_name,
                 apellido=usuario.last_name,
@@ -25,7 +25,7 @@ def registro_cliente(request):
                 direccion=direccion_ingresada
             )
 
-            # 3. Iniciamos sesión y lo mandamos a comprar
+            # Iniciamos sesión y lo mandamos a comprar
             login(request, usuario)  
             return redirect('catalogo:tienda')
     else:

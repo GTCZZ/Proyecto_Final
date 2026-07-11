@@ -9,7 +9,7 @@ from .chatbot_logico import consultar_chatbot
 import traceback
 from django.http import JsonResponse
 from .chatbot_logico import consultar_chatbot
-# Create your views here.
+
 
 def tienda(request):
     productos = Producto.objects.all()
@@ -39,7 +39,6 @@ def ver_carrito(request):
     carrito = request.session.get('carrito', {})
 
     # --- PARADIGMA FUNCIONAL APLICADO ---
-    # 1. Función pura que transforma un elemento del carrito en un diccionario con sus datos
     def crear_item(item_tupla):
         producto_id, cantidad = item_tupla
         prod = Producto.objects.get(id=producto_id)
@@ -49,14 +48,9 @@ def ver_carrito(request):
             'subtotal': prod.precio_unidad * cantidad
         }
 
-    # 2. Uso de MAP: Transformamos el carrito crudo en una lista de diccionarios completos
-    # Sin usar bucles 'for' mutables.
     productos_en_carrito = list(map(crear_item, carrito.items()))
 
-    # 3. Uso de REDUCE y LAMBDA: Calculamos el total sumando los subtotales 
-    # de forma inmutable. (Acumulador inicia en 0)
     total = reduce(lambda acumulador, item: acumulador + item['subtotal'], productos_en_carrito, 0)
-    # ------------------------------------
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
@@ -96,32 +90,28 @@ def ver_carrito(request):
     }
     return render(request, 'catalogo/carrito.html', contexto)
 
-# ... (tus otras vistas se quedan igual) ...
 
 def api_chat(request):
     try:
-        # 1. Recibimos el mensaje
+
         mensaje_usuario = request.GET.get('mensaje', '')
         
-        # 2. Intentamos usar el motor lógico
         respuesta_bot = consultar_chatbot(mensaje_usuario)
         
-        # 3. Si todo sale bien, devolvemos la respuesta normal
         return JsonResponse({'respuesta': respuesta_bot})
         
     except Exception as e:
-        # SI PYTHON FALLA, atrapamos el error y lo imprimimos en la terminal negra
+
         print("====== ERROR EN EL CHATBOT ======")
         traceback.print_exc()
         print("=================================")
         
-        # Y le enviamos el error al frontend en formato JSON para que no se rompa el JS
         return JsonResponse({'respuesta': f"⚠️ Error en el servidor lógico: {str(e)}"})
     
   
 def detalle_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
-    # Buscamos 5 productos aleatorios (excluyendo el que ya estamos viendo) para el carrusel
+
     productos_relacionados = Producto.objects.exclude(id=producto_id).order_by('?')[:5]
     
     contexto = {
@@ -135,7 +125,6 @@ def eliminar_del_carrito(request, producto_id):
         carrito = request.session.get('carrito', {})
         prod_id = str(producto_id)
         
-        # Si el producto está en el carrito, lo borramos de la memoria
         if prod_id in carrito:
             del carrito[prod_id]
             request.session['carrito'] = carrito
@@ -143,31 +132,24 @@ def eliminar_del_carrito(request, producto_id):
     return redirect('catalogo:ver_carrito')
 
 def categorias(request):
-    # 1. Obtenemos TODOS los productos y los convertimos en una lista estándar de Python
-    # para poder aplicar el paradigma funcional en memoria.
+
     productos = list(Producto.objects.all())
     
-    # Capturamos lo que el usuario envía por la URL (ej. ?q=chocolate&dulzura=Alto)
     query = request.GET.get('q', '').lower()
     filtro_dulzura = request.GET.get('dulzura', '')
     filtro_tamano = request.GET.get('tamano', '')
 
     # === APLICANDO PROGRAMACIÓN FUNCIONAL ===
     
-    # Filtrar por Nombre
     if query:
         productos = list(filter(lambda p: query in p.nombre_producto.lower(), productos))
         
-    # Filtrar por Nivel de Dulzura
     if filtro_dulzura:
         productos = list(filter(lambda p: p.nivel_dulzura == filtro_dulzura, productos))
         
-    # Filtrar por Tamaño
     if filtro_tamano:
         productos = list(filter(lambda p: p.tamano == filtro_tamano, productos))
 
-    # Usamos map() para extraer solo las columnas que nos interesan y set() para borrar duplicados.
-    # Así armamos los selectores del HTML de forma dinámica.
     todos_los_productos = Producto.objects.all()
     opciones_dulzura = set(filter(None, map(lambda p: p.nivel_dulzura, todos_los_productos)))
     opciones_tamano = set(filter(None, map(lambda p: p.tamano, todos_los_productos)))

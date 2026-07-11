@@ -8,7 +8,6 @@ class Usuario(AbstractUser):
     dni = models.CharField(max_length=8, unique=True, null=True, blank=True)
     telefono = models.CharField(max_length=15, null=True, blank=True)
     
-    # Opciones para el Rol
     ROLES = (
         ('ADMIN', 'Administrador'),
         ('CAJERO', 'Cajero'),

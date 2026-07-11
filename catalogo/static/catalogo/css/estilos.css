@@ -1,4 +1,5 @@
-/* catalogo/static/catalogo/css/estilos.css */
+/* ================= ESTILOS GLOBALES ================= */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 * {
@@ -9,8 +10,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #FFFDF9; /* Fondo crema muy suave */
-    color: #4A2825; /* Marrón chocolate oscuro */
+    background-color: #FFFDF9; 
+    color: #4A2825; 
     line-height: 1.6;
 }
 
@@ -125,7 +126,7 @@ body {
     box-shadow: 0 20px 40px rgba(74, 40, 37, 0.15);
 }
 
-/* ================= PRODUCT SECTION ================= */
+/* ================= ESTILOS PRODUCTO ================= */
 .section-title {
     padding: 40px 5% 10px;
     font-size: 2.5rem;
@@ -182,7 +183,7 @@ body {
 }
 
 .producto-estrellas {
-    color: #F4C150; /* Dorado */
+    color: #F4C150; 
     font-size: 0.9rem;
     margin-bottom: 10px;
 }
@@ -263,7 +264,7 @@ body {
 
 .auth-right {
     flex: 1;
-    background-color: #4A2825; /* Color base detrás de la imagen */
+    background-color: #4A2825; 
     display: flex;
 }
 
@@ -271,7 +272,7 @@ body {
     width: 100%;
     height: 100vh;
     object-fit: cover;
-    opacity: 0.5; /* Transparencia solicitada */
+    opacity: 0.5; 
 }
 
 .auth-form h2 {
@@ -331,16 +332,15 @@ body {
     font-weight: 600;
 }
 
-/* ================= LÍNEA HORIZONTAL DESLIZABLE ================= */
+/* ================= LÍNEA HORIZONTAL DESLIZABLE (DESCRIPCION_PRODUCTO) ================= */
 .slider-horizontal {
     display: flex;
     overflow-x: auto;
-    gap: 15px; /* Espacio entre cada producto */
-    padding-bottom: 15px; /* Espacio para la barra de scroll */
+    gap: 15px; 
+    padding-bottom: 15px; 
     scroll-behavior: smooth;
 }
 
-/* Personalizamos la barra de scroll para que se vea delgada y elegante */
 .slider-horizontal::-webkit-scrollbar {
     height: 8px;
 }
@@ -355,14 +355,14 @@ body {
 }
 
 .item-deslizable {
-    flex: 0 0 auto; /* LA CLAVE: Evita que se encojan y fuerza la línea horizontal */
-    width: 180px; /* Ancho fijo para cada cuadrito */
+    flex: 0 0 auto; 
+    width: 180px; 
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     overflow: hidden;
     border: 1px solid #eee;
-    text-decoration: none; /* Quitamos la línea de los enlaces */
+    text-decoration: none; 
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -374,7 +374,7 @@ body {
 .item-deslizable img {
     width: 100%;
     height: 140px;
-    object-fit: cover; /* Evita que la imagen se deforme */
+    object-fit: cover; 
 }
 
 .item-info {
@@ -386,9 +386,9 @@ body {
     margin: 0 0 5px 0;
     font-size: 0.95rem;
     color: #3E211D;
-    white-space: nowrap; /* Evita que el texto baje a otra línea */
+    white-space: nowrap; 
     overflow: hidden;
-    text-overflow: ellipsis; /* Pone "..." si el nombre es muy largo */
+    text-overflow: ellipsis; 
 }
 
 .item-info p {
@@ -480,10 +480,9 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 8px 15px; /* 8px de separación vertical, 15px horizontal */
+    gap: 8px 15px; 
 }
 
-/* Clases dinámicas para controlar el ancho */
 .form-group.half-width {
     width: calc(50% - 7.5px);
 }
@@ -492,21 +491,20 @@ body {
     width: 100%;
 }
 
-/* Reducimos el alto de los inputs y etiquetas para que el formulario sea más corto */
 .auth-form input[type="text"],
 .auth-form input[type="password"],
 .auth-form input[type="email"],
 .auth-form input[type="number"] {
-    padding: 8px 12px; /* Reducimos el relleno interno */
+    padding: 8px 12px; 
     margin-top: 4px;
     margin-bottom: 2px;
     font-size: 0.9rem;
-    height: 38px; /* Forzamos un alto más pequeño */
+    height: 38px; 
 }
 
 .auth-form label {
     margin-top: 6px;
-    font-size: 0.85rem; /* Letra un poco más pequeña */
+    font-size: 0.85rem; 
     color: #4A2825;
     font-weight: 600;
 }

@@ -9,7 +9,7 @@ pyDatalog.create_terms('economico, premium, muy_dulce, frutal')
 def consultar_chatbot(mensaje):
     pyDatalog.clear()
     
-    # 2. CARGAMOS LOS HECHOS (El truco: Pasamos el Objeto Completo 'p')
+    # CARGAMOS LOS HECHOS 
     productos = Producto.objects.all()
     for p in productos:
         + precio_rel(p, float(p.precio_unidad))
@@ -18,13 +18,13 @@ def consultar_chatbot(mensaje):
         if p.fruta and p.fruta.lower() != 'ninguna':
             + fruta_rel(p, p.fruta)
 
-    # 3. REGLAS LÓGICAS 
+    # REGLAS LÓGICAS 
     economico(ProductoObj) <= precio_rel(ProductoObj, PrecioVar) & (PrecioVar < 20.00)
     premium(ProductoObj) <= precio_rel(ProductoObj, PrecioVar) & (PrecioVar >= 100.00)
     muy_dulce(ProductoObj) <= dulzura_rel(ProductoObj, 'Alto')
     frutal(ProductoObj) <= fruta_rel(ProductoObj, FrutaVar)
 
-    # 4. MOTOR DE INFERENCIA
+    # MOTOR DE INFERENCIA
     mensaje = mensaje.lower()
     resultados_objetos = []
     
@@ -44,7 +44,7 @@ def consultar_chatbot(mensaje):
         respuestas = premium(ProductoObj)
         if respuestas: resultados_objetos = [r[0] for r in respuestas]
 
-    # 5. FORMATEAR RESPUESTA CON HTML (Enlaces y Precios)
+    # FORMATEAR RESPUESTA CON HTML
     if resultados_objetos:
         lista_html = []
         for prod in resultados_objetos:

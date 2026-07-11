@@ -12,12 +12,12 @@ function enviarMensaje() {
     
     if (userText.trim() === '') return;
 
-    // 1. Mostrar mensaje del usuario
+    // Mostrar mensaje del usuario
     messages.innerHTML += `<p style="text-align: right; color: blue;"><b>Tú:</b> ${userText}</p>`;
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
 
-    // 2. Consultar al Motor Lógico de Django vía FETCH
+    // Consultar al Motor Lógico de Django vía FETCH
     fetch(`/api/chat/?mensaje=${encodeURIComponent(userText)}`)
         .then(response => response.json())
         .then(data => {
