@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valerianos Pastelería Fina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+
+<body>
+    <!-- NAVBAR UNIFICADO -->
+    <nav class="navbar">
+        <a href="{% url 'tienda' %}" class="logo">Valerianos.</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'tienda' %}">Inicio</a></li>
+            <li><a href="{% url 'categorias' %}">Categorías</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+
+        <div class="nav-icons" style="display: flex; align-items: center; gap: 15px;">
+            {% if user.is_authenticated %}
+            <span style="font-size: 0.95rem; color: #4A2825;">
+                Hola, <b style="font-weight: 700;">{{ user.username }}</b>
+            </span>
+            <a href="{% url 'logout' %}" title="Cerrar sesión"
+                style="display: flex; align-items: center; text-decoration: none; color: #666;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">logout</span>
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" title="Iniciar Sesión"
+                style="display: flex; align-items: center; text-decoration: none; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">person</span>
+            </a>
+            <a href="{% url 'registro' %}"
+                style="font-size: 0.9rem; color: white; background-color: #A35D49; padding: 6px 15px; border-radius: 6px; text-decoration: none; font-weight: 600;">Regístrate</a>
+            {% endif %}
+
+            <a href="{% url 'ver_carrito' %}" title="Carrito de Compras"
+                style="text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 4px; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">shopping_bag</span>
+                <span style="font-weight: bold;">+{{ request.session.carrito|length }}</span>
+            </a>
+
+            <!-- MENÚ HAMBURGUESA -->
+            <button id="btn-hamburger" title="Menú de Notificaciones, Pedidos y Configuración"
+                onclick="toggleHamburgerMenu()"
+                style="background: none; border: none; cursor: pointer; display: flex; align-items: center; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 30px;">menu</span>
+                <span id="badge-notif-nav"
+                    style="display: none; background: #e74c3c; color: white; border-radius: 50%; font-size: 10px; font-weight: bold; width: 16px; height: 16px; align-items: center; justify-content: center; position: relative; top: -10px; left: -10px;">!</span>
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-text">
+            <h1>Llevamos felicidad a través de un pastel.</h1>
+            <p>Elaboramos diferentes tipos de pasteles, galletas suaves, tartas de queso y postres artesanales con los
+                ingredientes más finos de la ciudad. Date el gusto que mereces.</p>
+            <div class="btn-group">
+                <a href="#productos" class="btn-primary">Ordenar Ahora</a>
+                <a href="{% url 'categorias' %}" class="btn-secondary">Ver Menú</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                alt="Pastel de Chocolate">
+        </div>
+    </header>
+
+    <section id="productos">
+        <h2 class="section-title">Nuestros Más Vendidos</h2>
+        <p class="section-subtitle">Aquí tienes nuestras mejores creaciones que todos adoran. La ligereza y dulzura de
+            nuestros pasteles te harán querer más y más. Empieza a disfrutar de nuestra variedad.</p>
+
+        <div class="productos-grid">
+            {% for producto in productos %}
+            <div class="producto-card">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" class="producto-imagen">
+                {% else %}
+                <div style="width: 100%; height: 200px; background: #eee; border-radius: 15px; margin-bottom: 15px;">
+                </div>
+                {% endif %}
+
+                <div class="producto-info">
+                    <h3 class="producto-nombre">{{ producto.nombre_producto }}</h3>
+                    <div class="producto-estrellas">★★★★★ <span style="color: #999; font-size: 0.8rem;">4.9</span></div>
+
+                    <p class="producto-precio">S/ {{ producto.precio_unidad }}</p>
+                    <a href="{% url 'detalle_producto' producto.id %}" class="btn-card">Ver Detalles</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer class="footer" id="contacto">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Valerianos</h3>
+                <p>Tu pastelería de confianza para momentos especiales.</p>
+                <p>Llevando dulzura a tu hogar desde 2026.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces Rápidos</h3>
+                <p>Términos y Condiciones</p>
+                <p>Política de Privacidad</p>
+                <p>Preguntas Frecuentes</p>
+            </div>
+            <div class="footer-col">
+                <h3>Visítanos</h3>
+                <p>📍 Av. Ejército 1025</p>
+                <p>Arequipa, Perú</p>
+                <p>📞 +51 959 123 456</p>
+                <p>✉️ pedidos@valerianos.pe</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Valerianos Pastelería Fina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- CHATBOT FLOTANTE -->
+    <div id="chatbot-container"
+        style="position: fixed; bottom: 20px; right: 20px; width: 320px; border: none; border-radius: 15px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.15); font-family: 'Poppins', sans-serif; z-index: 1000; overflow: hidden;">
+        <div style="background: #4A2825; color: white; padding: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+            onclick="toggleChat()">
+            <span style="display: flex; align-items: center; gap: 6px;"><span
+                    class="material-symbols-outlined">chat</span> Asistente Virtual</span>
+            <span>▼</span>
+        </div>
+
+        <div id="chat-body" style="display: none; padding: 15px; background: #FFFDF9;">
+            <div id="chat-messages"
+                style="height: 250px; overflow-y: auto; font-size: 14px; margin-bottom: 10px; padding-right: 5px;">
+                <p style="background: #FFF2E5; padding: 10px; border-radius: 10px; color: #4A2825;">
+                    <b>Bot:</b> ¡Hola! Dime qué tipo de postre buscas (ej. "algo económico", "muy dulce" o "con fruta").
+                </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="chat-input" placeholder="Escribe aquí..."
+                    style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Poppins', sans-serif;">
+                <button onclick="enviarMensaje()"
+                    style="background: #A35D49; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">➢</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR HAMBURGUESA OVERLAY (PANEL DE NOTIFICACIONES, MIS PEDIDOS Y CONFIGURACIÓN) -->
+    <div id="hamburger-sidebar"
+        style="position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 2000; transition: right 0.4s ease; display: flex; flex-direction: column;">
+        <div
+            style="background: #3E211D; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="material-symbols-outlined">menu_open</span>
+                <h3 style="margin: 0; font-size: 1.2rem;">Menu</h3>
+            </div>
+            <button onclick="toggleHamburgerMenu()"
+                style="background: none; border: none; color: white; cursor: pointer; display: flex;">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div style="display: flex; border-bottom: 2px solid #eee; background: #FFFDF9;">
+            <button id="tab-btn-notif" onclick="switchTab('notificaciones')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #A35D49; border-bottom: 3px solid #A35D49; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">notifications</span> Notif.
+            </button>
+            <button id="tab-btn-pedidos" onclick="switchTab('pedidos')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #888; border-bottom: 3px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">package_2</span> Pedidos
+            </button>
+            <button id="tab-btn-config" onclick="switchTab('configuracion')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #888; border-bottom: 3px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">settings</span> Config.
+            </button>
+        </div>
+
+        <div id="content-notificaciones" style="flex: 1; overflow-y: auto; padding: 20px;">
+            <div id="lista-notificaciones">
+                <p style="text-align: center; color: #888;">Cargando notificaciones...</p>
+            </div>
+        </div>
+
+        <div id="content-pedidos" style="flex: 1; overflow-y: auto; padding: 20px; display: none;">
+            <div id="lista-pedidos-acordeon">
+                <p style="text-align: center; color: #888;">Cargando mis pedidos...</p>
+            </div>
+        </div>
+
+        <div id="content-configuracion" style="flex: 1; overflow-y: auto; padding: 20px; display: none;">
+            <h4 style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                <span class="material-symbols-outlined">person</span> Mis Datos Personales
+            </h4>
+            <form id="form-config-perfil" onsubmit="guardarPerfil(event)"
+                style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+                <input type="text" id="cfg-nombre" placeholder="Nombre" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-apellido" placeholder="Apellido" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="email" id="cfg-email" placeholder="Correo Electrónico" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-telefono" placeholder="Teléfono"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-direccion" placeholder="Dirección de Entrega"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <button type="submit" class="btn-primary"
+                    style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Guardar
+                    Datos</button>
+            </form>
+
+            <h4
+                style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; border-top: 1px solid #eee; padding-top: 15px;">
+                <span class="material-symbols-outlined">credit_card</span> Métodos de Pago Predeterminados
+            </h4>
+            <form id="form-config-pago" onsubmit="guardarMetodoPagoPref(event)"
+                style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+                <select id="cfg-metodo-pref" onchange="toggleConfigPagoInputs()"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="TARJETA">💳 Tarjeta de Crédito / Débito</option>
+                    <option value="PAYPAL">🅿️ PayPal</option>
+                </select>
+                <div id="cfg-box-tarjeta">
+                    <input type="text" id="cfg-num-tarjeta" placeholder="Número de Tarjeta (16 dígitos)" maxlength="16"
+                        style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; width: 100%;">
+                </div>
+                <div id="cfg-box-paypal" style="display: none;">
+                    <input type="email" id="cfg-paypal-email" placeholder="Correo de Cuenta PayPal"
+                        style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; width: 100%;">
+                </div>
+                <button type="submit" class="btn-secondary"
+                    style="padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">Guardar Pago
+                    Predeterminado</button>
+            </form>
+
+            <h4
+                style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; border-top: 1px solid #eee; padding-top: 15px;">
+                <span class="material-symbols-outlined">lock</span> Cambiar Contraseña
+            </h4>
+            <form id="form-config-password" onsubmit="guardarPassword(event)"
+                style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="password" id="cfg-pass-actual" placeholder="Contraseña Actual" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="password" id="cfg-pass-nuevo" placeholder="Nueva Contraseña (mínimo 6 caracteres)" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <button type="submit" class="btn-primary"
+                    style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; background-color: #3E211D;">Actualizar
+                    Contraseña</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="hamburger-backdrop" onclick="toggleHamburgerMenu()"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 1999; display: none;">
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+
+</html>

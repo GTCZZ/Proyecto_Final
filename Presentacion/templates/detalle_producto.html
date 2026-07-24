@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ producto.nombre_producto }} - Valerianos Pastelería Fina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <style>
+        .product-detail-container {
+            max-width: 1100px;
+            margin: 40px auto 60px;
+            padding: 0 20px;
+        }
+
+        .product-hero-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(74, 40, 37, 0.08);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            border: 1px solid #f5ede6;
+        }
+
+        @media (max-width: 850px) {
+            .product-hero-card {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 25px;
+            }
+        }
+
+        .product-gallery {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-gallery img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+
+        .product-gallery:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .product-badge {
+            background: #FFF2E5;
+            color: #4A2825;
+            border: 1px solid #f2dfd0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #A35D49;
+            margin: 15px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-add-cart-large {
+            background-color: #4A2825;
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(74, 40, 37, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-cart-large:hover {
+            background-color: #311815;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(74, 40, 37, 0.3);
+        }
+
+        .related-title {
+            color: #3E211D;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 50px 0 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR UNIFICADO CON ÍCONOS Y HAMBURGUESA -->
+    <nav class="navbar">
+        <a href="{% url 'tienda' %}" class="logo">Valerianos.</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'tienda' %}">Inicio</a></li>
+            <li><a href="{% url 'categorias' %}">Categorías</a></li>
+            <li><a href="#">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+
+        <div class="nav-icons" style="display: flex; align-items: center; gap: 15px;">
+            {% if user.is_authenticated %}
+            <span style="font-size: 0.95rem; color: #4A2825;">
+                Hola, <b style="font-weight: 700;">{{ user.username }}</b>
+            </span>
+            <a href="{% url 'logout' %}" title="Cerrar sesión"
+                style="display: flex; align-items: center; text-decoration: none; color: #666;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">logout</span>
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" title="Iniciar Sesión"
+                style="display: flex; align-items: center; text-decoration: none; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">person</span>
+            </a>
+            <a href="{% url 'registro' %}"
+                style="font-size: 0.9rem; color: white; background-color: #A35D49; padding: 6px 15px; border-radius: 6px; text-decoration: none; font-weight: 600;">Regístrate</a>
+            {% endif %}
+
+            <a href="{% url 'ver_carrito' %}" title="Carrito de Compras"
+                style="text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 4px; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 26px;">shopping_bag</span>
+                <span style="font-weight: bold;">+{{ request.session.carrito|length }}</span>
+            </a>
+
+            <!-- MENÚ HAMBURGUESA -->
+            <button id="btn-hamburger" title="Menú de Notificaciones, Pedidos y Configuración"
+                onclick="toggleHamburgerMenu()"
+                style="background: none; border: none; cursor: pointer; display: flex; align-items: center; color: #4A2825;">
+                <span class="material-symbols-outlined" style="font-size: 30px;">menu</span>
+                <span id="badge-notif-nav"
+                    style="display: none; background: #e74c3c; color: white; border-radius: 50%; font-size: 10px; font-weight: bold; width: 16px; height: 16px; align-items: center; justify-content: center; position: relative; top: -10px; left: -10px;">!</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- DETALLE DE PRODUCTO ELEGANTE -->
+    <div class="product-detail-container">
+
+        <div class="product-hero-card">
+            <!-- Galería de Imagen con zoom -->
+            <div class="product-gallery">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}">
+                {% else %}
+                <div
+                    style="width: 100%; height: 420px; background: linear-gradient(135deg, #FFF2E5, #FFFDF9); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #A35D49;">
+                    <span class="material-symbols-outlined" style="font-size: 80px;">cake</span>
+                    <span style="font-weight: bold; margin-top: 10px;">Valerianos Pastelería</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Información del Producto -->
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <span style="color: #F4C150; font-size: 1.1rem;">★★★★★</span>
+                    <span style="color: #888; font-size: 0.9rem; font-weight: 600;">4.9 (42 valoraciones)</span>
+                </div>
+
+                <h1
+                    style="color: #3E211D; font-size: 2.6rem; font-weight: 700; line-height: 1.15; margin-bottom: 10px;">
+                    {{ producto.nombre_producto }}
+                </h1>
+
+                <div class="price-tag">S/ {{ producto.precio_unidad }}</div>
+
+                <p style="color: #666; font-size: 1.05rem; line-height: 1.7; margin-bottom: 20px;">
+                    {% if producto.descripcion %}{{ producto.descripcion }}{% else %}Exquisita creación artesanal horneada diariamente por nuestros maestros pasteleros utilizando solo ingredientes finos de la más alta calidad.{% endif %}
+                </p>
+
+                <!-- Badges de características del postre -->
+                <div class="product-badge-group">
+                    {% if producto.sabor %}
+                    <span class="product-badge"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">cookie</span> {{ producto.sabor }}</span>
+                    {% endif %}
+                    {% if producto.nivel_dulzura %}
+                    <span class="product-badge"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">icecream</span> Dulzura: {{ producto.nivel_dulzura }}</span>
+                    {% endif %}
+                    {% if producto.tamano %}
+                    <span class="product-badge"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">straighten</span> Tamaño: {{ producto.tamano }}</span>
+                    {% endif %}
+                    {% if producto.cobertura %}
+                    <span class="product-badge"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">bakery_dining</span> {{ producto.cobertura }}</span>
+                    {% endif %}
+                    {% if producto.fruta %}
+                    <span class="product-badge"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">nutrition</span> {{ producto.fruta }}</span>
+                    {% endif %}
+                </div>
+
+                <div
+                    style="background: #FFFDF9; border: 1px solid #f2dfd0; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="material-symbols-outlined" style="color: #27ae60; font-size: 28px;">verified</span>
+                        <div>
+                            <b style="color: #3E211D; font-size: 0.95rem;">Garantía de Frescura</b>
+                            <p style="font-size: 0.82rem; color: #666; margin: 0;">Preparado el mismo día de tu entrega o retiro.</p>
+                        </div>
+                    </div>
+                    {% if producto.inventario.first %}
+                        <div style="text-align: right; background: #FFF2E5; padding: 6px 12px; border-radius: 8px; border: 1px solid #f2dfd0;">
+                            <span style="font-size: 0.8rem; color: #4A2825; display: flex; align-items: center; gap: 4px; font-weight: bold;">
+                                <span class="material-symbols-outlined" style="font-size: 16px; color: #A35D49;">inventory_2</span>
+                                {{ producto.inventario.first.stock }} en Stock
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <form action="{% url 'agregar_carrito' producto.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-add-cart-large">
+                        <span class="material-symbols-outlined">add_shopping_cart</span> Añadir al Carrito de Compras
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- RECOMENDACIONES "TAMBIÉN PODRÍA GUSTARTE" -->
+        <h2 class="related-title">
+            <span class="material-symbols-outlined" style="color: #A35D49; font-size: 32px;">favorite</span> También
+            podría gustarte
+        </h2>
+
+        <div class="slider-horizontal">
+            {% for rel in productos_relacionados %}
+            <a href="{% url 'detalle_producto' rel.id %}" class="item-deslizable">
+                {% if rel.imagen %}
+                <img src="{{ rel.imagen.url }}" alt="{{ rel.nombre_producto }}">
+                {% else %}
+                <div
+                    style="width: 100%; height: 140px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 0.8rem;">
+                    Sin foto</div>
+                {% endif %}
+
+                <div class="item-info">
+                    <h4>{{ rel.nombre_producto }}</h4>
+                    <p>S/ {{ rel.precio_unidad }}</p>
+                </div>
+            </a>
+            {% empty %}
+            <p style="color: #666; font-size: 0.9rem;">No hay otros productos disponibles por el momento.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contacto">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Valerianos</h3>
+                <p>Tu pastelería de confianza para momentos especiales.</p>
+                <p>Llevando dulzura a tu hogar desde 2026.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces Rápidos</h3>
+                <p>Términos y Condiciones</p>
+                <p>Política de Privacidad</p>
+                <p>Preguntas Frecuentes</p>
+            </div>
+            <div class="footer-col">
+                <h3>Visítanos</h3>
+                <p>📍 Av. Ejército 1025</p>
+                <p>Arequipa, Perú</p>
+                <p>📞 +51 959 123 456</p>
+                <p>✉️ pedidos@valerianos.pe</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Valerianos Pastelería Fina. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- SIDEBAR HAMBURGUESA OVERLAY (PANEL DE NOTIFICACIONES, MIS PEDIDOS Y CONFIGURACIÓN) -->
+    <div id="hamburger-sidebar"
+        style="position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 2000; transition: right 0.4s ease; display: flex; flex-direction: column;">
+        <div
+            style="background: #3E211D; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="material-symbols-outlined">menu_open</span>
+                <h3 style="margin: 0; font-size: 1.2rem;">Menu</h3>
+            </div>
+            <button onclick="toggleHamburgerMenu()"
+                style="background: none; border: none; color: white; cursor: pointer; display: flex;">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- 3 PESTAÑAS: NOTIFICACIONES | MIS PEDIDOS | CONFIGURACIÓN -->
+        <div style="display: flex; border-bottom: 2px solid #eee; background: #FFFDF9;">
+            <button id="tab-btn-notif" onclick="switchTab('notificaciones')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #A35D49; border-bottom: 3px solid #A35D49; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">notifications</span> Notif.
+            </button>
+            <button id="tab-btn-pedidos" onclick="switchTab('pedidos')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #888; border-bottom: 3px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">package_2</span> Pedidos
+            </button>
+            <button id="tab-btn-config" onclick="switchTab('configuracion')"
+                style="flex: 1; padding: 12px 6px; border: none; background: none; font-weight: bold; font-size: 0.82rem; color: #888; border-bottom: 3px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">settings</span> Config.
+            </button>
+        </div>
+
+        <!-- CONTENIDO NOTIFICACIONES -->
+        <div id="content-notificaciones" style="flex: 1; overflow-y: auto; padding: 20px;">
+            <div id="lista-notificaciones">
+                <p style="text-align: center; color: #888;">Cargando notificaciones...</p>
+            </div>
+        </div>
+
+        <!-- CONTENIDO MIS PEDIDOS -->
+        <div id="content-pedidos" style="flex: 1; overflow-y: auto; padding: 20px; display: none;">
+            <div id="lista-pedidos-acordeon">
+                <p style="text-align: center; color: #888;">Cargando mis pedidos...</p>
+            </div>
+        </div>
+
+        <!-- CONTENIDO CONFIGURACIÓN -->
+        <div id="content-configuracion" style="flex: 1; overflow-y: auto; padding: 20px; display: none;">
+            <h4 style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;">
+                <span class="material-symbols-outlined">person</span> Mis Datos Personales
+            </h4>
+            <form id="form-config-perfil" onsubmit="guardarPerfil(event)"
+                style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+                <input type="text" id="cfg-nombre" placeholder="Nombre" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-apellido" placeholder="Apellido" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="email" id="cfg-email" placeholder="Correo Electrónico" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-telefono" placeholder="Teléfono"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="text" id="cfg-direccion" placeholder="Dirección de Entrega"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <button type="submit" class="btn-primary"
+                    style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">Guardar
+                    Datos</button>
+            </form>
+
+            <h4
+                style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; border-top: 1px solid #eee; padding-top: 15px;">
+                <span class="material-symbols-outlined">credit_card</span> Métodos de Pago Predeterminados
+            </h4>
+            <form id="form-config-pago" onsubmit="guardarMetodoPagoPref(event)"
+                style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+                <select id="cfg-metodo-pref" onchange="toggleConfigPagoInputs()"
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="TARJETA">💳 Tarjeta de Crédito / Débito</option>
+                    <option value="PAYPAL">🅿️ PayPal</option>
+                </select>
+                <div id="cfg-box-tarjeta">
+                    <input type="text" id="cfg-num-tarjeta" placeholder="Número de Tarjeta (16 dígitos)" maxlength="16"
+                        style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; width: 100%;">
+                </div>
+                <div id="cfg-box-paypal" style="display: none;">
+                    <input type="email" id="cfg-paypal-email" placeholder="Correo de Cuenta PayPal"
+                        style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; width: 100%;">
+                </div>
+                <button type="submit" class="btn-secondary"
+                    style="padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">Guardar Pago
+                    Predeterminado</button>
+            </form>
+
+            <h4
+                style="color: #3E211D; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; border-top: 1px solid #eee; padding-top: 15px;">
+                <span class="material-symbols-outlined">lock</span> Cambiar Contraseña
+            </h4>
+            <form id="form-config-password" onsubmit="guardarPassword(event)"
+                style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="password" id="cfg-pass-actual" placeholder="Contraseña Actual" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <input type="password" id="cfg-pass-nuevo" placeholder="Nueva Contraseña (mínimo 6 caracteres)" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                <button type="submit" class="btn-primary"
+                    style="padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; background-color: #3E211D;">Actualizar
+                    Contraseña</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="hamburger-backdrop" onclick="toggleHamburgerMenu()"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 1999; display: none;">
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+
+</html>
