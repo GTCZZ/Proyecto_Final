@@ -122,7 +122,7 @@
                     <select name="dulzura" class="filtro-control">
                         <option value="">Cualquiera</option>
                         {% for d in opciones_dulzura %}
-                        <option value="{{ d }}" {% if request.GET.dulzura==d %}selected{% endif %}>{{ d }}</option>
+                        <option value="{{ d }}" {% if request.GET.dulzura == d %}selected{% endif %}>{{ d }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -132,7 +132,7 @@
                     <select name="tamano" class="filtro-control">
                         <option value="">Cualquiera</option>
                         {% for t in opciones_tamano %}
-                        <option value="{{ t }}" {% if request.GET.tamano==t %}selected{% endif %}>{{ t }}</option>
+                        <option value="{{ t }}" {% if request.GET.tamano == t %}selected{% endif %}>{{ t }}</option>
                         {% endfor %}
                     </select>
                 </div>
